@@ -1,7 +1,7 @@
 {
-  "id": "453d3447-5da2-4f66-ad5e-0fcff7281451",
-  "created_at": "2024-12-20T15:56:04.383000Z",
-  "modified_at": "2024-12-20T15:56:04.383000Z",
+  "id": "83d1c49c-a12e-4896-911a-a7146dbc88f4",
+  "created_at": "2024-12-20T16:01:22.701000Z",
+  "modified_at": "2024-12-20T16:01:22.701000Z",
   "managed_transaction_data": {
     "created_by": {
       "id": "b81120d9-a62b-4191-b0fd-20dc557c81cf",
@@ -66,12 +66,12 @@
   "state": "waiting_for_signing_trigger",
   "state_changes": [
     {
-      "changed_at": "2024-12-20T15:56:04.383000Z",
+      "changed_at": "2024-12-20T16:01:22.701000Z",
       "asset_prices": [],
       "new_state": "waiting_for_approval"
     },
     {
-      "changed_at": "2024-12-20T15:56:04.413000Z",
+      "changed_at": "2024-12-20T16:01:22.737000Z",
       "asset_prices": [],
       "previous_state": "waiting_for_approval",
       "new_state": "waiting_for_signing_trigger"
@@ -152,9 +152,9 @@
     },
     {
       "address": {
-        "explorer_url": "https://solscan.io/account/DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL",
+        "explorer_url": "https://solscan.io/account/DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh",
         "type": "solana",
-        "address": "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL"
+        "address": "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh"
       },
       "writable": true,
       "signer": false
@@ -194,12 +194,12 @@
     "reversion": {
       "state": "not_reverted"
     },
-    "fee": "1865000",
+    "fee": "666800",
     "enriched_fee": {
-      "fee": "1865000",
+      "fee": "666800",
       "fiat_price": {
-        "price": "19085",
-        "price_float": "19085",
+        "price": "18937",
+        "price_float": "18937",
         "fiat_currency": {
           "currency_symbol": "usd",
           "decimals": 2
@@ -266,15 +266,15 @@
               "is_spam": false
             },
             "price": {
-              "price": "19085",
-              "price_float": "19085",
+              "price": "18937",
+              "price_float": "18937",
               "fiat_currency": {
                 "currency_symbol": "usd",
                 "decimals": 2
               }
             }
           },
-          "diff": "1858599",
+          "diff": "660399",
           "type": "native",
           "address": {
             "vault": {
@@ -299,8 +299,8 @@
             "address": "CtvSEG7ph7SQumMtbnSKtDTLoUQoy8bxPUcjwvmNgGim"
           },
           "price": {
-            "price": "19085",
-            "price_float": "19085",
+            "price": "18937",
+            "price_float": "18937",
             "fiat_currency": {
               "currency_symbol": "usd",
               "decimals": 2
@@ -365,8 +365,8 @@
               "is_spam": false
             },
             "price": {
-              "price": "19085",
-              "price_float": "19085",
+              "price": "18937",
+              "price_float": "18937",
               "fiat_currency": {
                 "currency_symbol": "usd",
                 "decimals": 2
@@ -398,8 +398,8 @@
             "address": "9BgxwZMyNzGUgp6hYXMyRKv3kSkyYZAMPGisqJgnXCFS"
           },
           "price": {
-            "price": "19085",
-            "price_float": "19085",
+            "price": "18937",
+            "price_float": "18937",
             "fiat_currency": {
               "currency_symbol": "usd",
               "decimals": 2

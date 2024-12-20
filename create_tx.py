@@ -6,7 +6,6 @@ from api_requests.broacast import broadcast_tx
 from signing.signer import sign
 
 
-
 with open('request_body.json', 'r') as f:
     request_json = json.load(f)
 request_body = json.dumps(request_json)
