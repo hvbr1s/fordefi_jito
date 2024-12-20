@@ -27,13 +27,12 @@ A tool for sending Solana transactions with Jito's Block Engine integration usin
 Open `craft_request.py` and configure the following parameters:
 - `jito_tip_amount`: Amount to tip Jito validators
 - `priority_fee`: Transaction priority fee
-- `vault`: Vault settings
 
 ## Usage
 
 Execute the following scripts in order:
 
-1. `python craft_request.py` - Prepares the transaction request
+1. `python craft_request.py` - Prepares the serialized tx payload
 2. `python create_tx.py` - Creates the transaction
 3. `python sign_tx.py` - Signs the transaction using Fordefi
 4. `python broadcast_to_jito.py` - Broadcasts the signed transaction to Jito's block engine.
