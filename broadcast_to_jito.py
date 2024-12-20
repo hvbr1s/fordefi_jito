@@ -5,7 +5,11 @@ import json
 from api_requests.broacast import get_tx
 from signing.signer import sign
 
-transaction_id = "43cb0200-2abb-4d60-8d32-8d60d74d5995"
+with open("./tx_data.json", "r") as f:
+    data = json.load(f)
+transaction_id = data["id"]
+print(f"Preparing to push {transaction_id}")
+
 access_token = os.getenv("FORDEFI_API_TOKEN")
 path = f"/api/v1/transactions/{transaction_id}"
 request_body = ""

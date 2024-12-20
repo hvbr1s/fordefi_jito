@@ -24,11 +24,11 @@ async def create_legacy_simple_transaction(sender: Pubkey, receiver: Pubkey, vau
         )
     )
     # Jito tip transfer
-    jito_tip_amount = 10000
+    jito_tip_amount = 10000 # CUSTOMIZE AS NEEDED
     jito_tip_account = Pubkey.from_string(sdk.get_random_tip_account())
     jito_tip_ix = transfer(TransferParams(from_pubkey=sender, to_pubkey=jito_tip_account, lamports=jito_tip_amount))
     # Priority Fee
-    priority_fee = 50000
+    priority_fee = 10000 # CUSTOMIZE AS NEEDED
     priority_fee_ix = set_compute_unit_price(priority_fee)
 
     # Compile the message for a v0 transaction (with mock blockhash)
