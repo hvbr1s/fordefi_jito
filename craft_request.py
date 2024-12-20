@@ -39,11 +39,11 @@ async def create_legacy_simple_transaction(sender: Pubkey, receiver: Pubkey, vau
     json_body = {
         "vault_id": vault,
         "signer_type": "api_signer",
-        "sign_mode": "triggered",
+        "sign_mode": "triggered", # IMPORTANT
         "type": "solana_transaction",
         "details": {
             "type": "solana_serialized_transaction_message",
-            "push_mode": "manual", # PUSH MODE
+            "push_mode": "manual", # IMPORTANT
             "data": base64.b64encode(bytes(msg)).decode(),
             "chain": "solana_mainnet"
         },
