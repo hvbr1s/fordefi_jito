@@ -5,7 +5,7 @@ import json
 from api_requests.broacast import get_tx
 from signing.signer import sign
 
-transaction_id = "83d1c49c-a12e-4896-911a-a7146dbc88f4"
+transaction_id = "011687e4-f4df-462d-992e-086a0eb966ee"
 access_token = os.getenv("FORDEFI_API_TOKEN")
 path = f"/api/v1/transactions/{transaction_id}"
 request_body = ""
@@ -19,7 +19,7 @@ fetch_raw_signature = get_tx(path, access_token, signature, timestamp, request_b
 raw_transaction_base64 = fetch_raw_signature['raw_transaction']
 print(f"Raw signature -> {raw_transaction_base64}")
 
-# Convert base64 to bytes, then to base58 (Optional)
+# Convert base64 to bytes, then to base58 (OPTIONAL)
 # import base64
 # import base58  
 # raw_bytes = base64.b64decode(raw_transaction_base64)

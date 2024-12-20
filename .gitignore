@@ -12,3 +12,8 @@ wheels/
 
 # Secrets
 secret
+
+# Tx data
+request_body.json
+tx_data.json
+
