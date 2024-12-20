@@ -1,0 +1,12 @@
+{
+  "vault_id": "9597e08a-32a8-4f96-a043-a3e7f1675f8d",
+  "signer_type": "api_signer",
+  "sign_mode": "triggered",
+  "type": "solana_transaction",
+  "details": {
+    "type": "solana_serialized_transaction_message",
+    "push_mode": "manual",
+    "data": "AQACBbC9mLkEneZ3dzrSuPd57FNqwIzEGmBeBbp3ogYc/Hq6eZp90uGjUTshnO3H2yHIlvUarBN5fPHkiFUo1GfwZfG/lxtZEItbhaBPsJPx4htOP9TEyPSH3Qm5V1J2nw3YwwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwZGb+UhFzL/7K26csOb57yM5bvF9xJrLEObOkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMEAAkD6AMAAAAAAAADAgABDAIAAAABAAAAAAAAAAMCAAIMAgAAAOgDAAAAAAAA",
+    "chain": "solana_mainnet"
+  }
+}
