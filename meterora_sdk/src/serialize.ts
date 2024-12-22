@@ -56,19 +56,40 @@ async function main(){
 
     const removeLiquidityTx = await removeLiquidity(onePosition, TRADER)
     
-    // Jito
-    const client = jito.searcher.searcherClient("https://mainnet.block-engine.jito.wtf/api/v1")
-    const tipAccount  = new web3.PublicKey(client.getTipAccounts())
-    const tip = 1000 // amount in lamports (1 SOL = 1e9 lamports)
-    const tippingTx = new web3.Transaction().add(
-        web3.SystemProgram.transfer({
-            fromPubkey: TRADER,
-            toPubkey: tipAccount,
-            lamports: tip, 
-        })
-    );
+    // // Jito
+    // const client = jito.searcher.searcherClient("frankfurt.mainnet.block-engine.jito.wtf")
 
-    // Ensure transactions are in an array format
+    // const tipAccountsResult = await client.getTipAccounts();
+    // if (!tipAccountsResult.ok) {
+    //     throw new Error(`Failed to get tip accounts: ${tipAccountsResult.error}`);
+    // }
+
+    // // Get the first tip account from the array and convert it to a PublicKey
+    // const tipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
+
+    // console.log(`Tip account -> ${tipAccount}`)
+    // const tip = 1000 // amount in lamports (1 SOL = 1e9 lamports)
+    // const priorityFee = 1000 // in lamports too
+    // const tippingTx = new web3.Transaction()
+    // .add(
+    //     web3.ComputeBudgetProgram.setComputeUnitPrice({
+    //         microLamports: priorityFee, 
+    //     })
+    // )
+    // .add(
+    //     web3.SystemProgram.transfer({
+    //         fromPubkey: TRADER,
+    //         toPubkey: tipAccount,
+    //         lamports: tip, 
+    //     })
+    // );
+
+    // // Ensure transactions are in an array format
+    // const allTransactions = [
+    //     tippingTx,
+    //     ...(Array.isArray(removeLiquidityTx) ? removeLiquidityTx : [removeLiquidityTx])
+    // ];
+
     const transactions = Array.isArray(removeLiquidityTx) ? removeLiquidityTx : [removeLiquidityTx];
 
     // Map each transaction to its corresponding JSON body
