@@ -49,7 +49,7 @@ def main():
         # Save data to a JSON file (RECOMMENDED TO RUN ONCE TO HAVE A GOOD VIEW OF THE OBJECT RETURNED BY THE API)
         with open('tx_data.json', 'w') as json_file:
             json.dump(data, json_file, indent=2)
-        print("Data has been saved to 'response_data.json'")
+        print("Data has been saved to 'tx_data.json'")
 
     except Exception as e:
             print(f"Error: {str(e)}")

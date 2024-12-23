@@ -7,7 +7,7 @@ import * as jito from 'jito-ts'
 
 const quicknode_key = process.env.QUICKNODE_MAINNET_KEY
 const connection = new web3.Connection(`https://winter-solemn-sun.solana-mainnet.quiknode.pro/${quicknode_key}/`)
-const SOL_USDC_POOL = new web3.PublicKey('HTvjzsfX3yU6BUodCjZ5vZkUrAxMDTrBs3CJaq43ashR')
+const SOL_USDC_POOL = new web3.PublicKey('BVRbyLjjfSBcoyiYFuxbgKYnWuiFaF9CSXEa5vdSZ9Hh') // infor can be fetched from 'create position info in block explorer'
 const TRADER = new web3.PublicKey('CtvSEG7ph7SQumMtbnSKtDTLoUQoy8bxPUcjwvmNgGim') // your Fordefi Solana Vault address
 
 async function createDlmm(){
@@ -39,8 +39,8 @@ async function removeLiquidity(onePosition: any, TRADER: web3.PublicKey){
         position: onePosition.publicKey,
         user: TRADER,
         binIds: binIdsToRemove,
-        bps: new BN(10000),
-        shouldClaimAndClose: true,
+        bps: new BN(10000), // we remove 1000 bps (100%) of the positions
+        shouldClaimAndClose: true, // and we also close the account and rewards
     });
 
     return removeLiquidityTx
@@ -49,14 +49,15 @@ async function removeLiquidity(onePosition: any, TRADER: web3.PublicKey){
 async function main(){
 
     const myPositions = await userPosition()
+    console.log(myPositions)
 
     const onePosition = myPositions.find(({ publicKey }) =>
-        publicKey.equals(new web3.PublicKey('7pcrUCzPLkj4H4ZEc6c8Ubd5W8dTeDtyBDaESdNNL2du'))
+        publicKey.equals(new web3.PublicKey('4s7jqEGTGSBAJQVELMafgzUmaGgB2XjMQENm9A58Tad8')) // adjust depending on output of myPositions
       );
 
     const removeLiquidityTx = await removeLiquidity(onePosition, TRADER)
     
-    // Jito
+    // Create Jito client instance
     const client = jito.searcher.searcherClient("frankfurt.mainnet.block-engine.jito.wtf") // can customize
 
     const tipAccountsResult = await client.getTipAccounts();
@@ -89,17 +90,17 @@ async function main(){
     tippingTx.recentBlockhash = blockhash;
     tippingTx.feePayer = TRADER;
 
-    // Is  Array check
+    // Is Array check
     const removeLiquidityTxs = Array.isArray(removeLiquidityTx) 
         ? removeLiquidityTx 
         : [removeLiquidityTx];
 
-    // Add removeLiquidityTx(s) to Jito tippingTx
+    // Add removeLiquidityTx instructions to Jito tippingTx instructions
     for (const tx of removeLiquidityTxs) {
         tippingTx.add(...tx.instructions);
     }
 
-    // Compile + serialize the merged transaction
+    // Compile + serialize the merged transactions
     const mergedMessage = tippingTx.compileMessage();
     const serializedV0Message = Buffer.from(
         mergedMessage.serialize()
