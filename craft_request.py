@@ -62,6 +62,6 @@ async def main():
     # Save data to a JSON file
     with open('request_body.json', 'w') as json_file:
         json.dump(request_body, json_file, indent=2)
-    print("Data has been saved to 'response_data.json'")
+    print("Data has been saved to 'request_body.json'")
 
 asyncio.run(main())
