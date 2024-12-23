@@ -7,7 +7,7 @@ import * as jito from 'jito-ts'
 
 const quicknode_key = process.env.QUICKNODE_MAINNET_KEY
 const connection = new web3.Connection(`https://winter-solemn-sun.solana-mainnet.quiknode.pro/${quicknode_key}/`)
-const SOL_USDC_POOL = new web3.PublicKey('BVRbyLjjfSBcoyiYFuxbgKYnWuiFaF9CSXEa5vdSZ9Hh') // infor can be fetched from 'create position info in block explorer'
+const SOL_USDC_POOL = new web3.PublicKey('BVRbyLjjfSBcoyiYFuxbgKYnWuiFaF9CSXEa5vdSZ9Hh') // info can be fetched from 'create position info in block explorer'
 const TRADER = new web3.PublicKey('CtvSEG7ph7SQumMtbnSKtDTLoUQoy8bxPUcjwvmNgGim') // your Fordefi Solana Vault address
 
 async function createDlmm(){
