@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tx": "ts-node --project tsconfig.json src/serialize.ts"
+    "remove": "ts-node --project tsconfig.json src/serialize_remove_liquidity.ts",
+    "swap": "ts-node --project tsconfig.json src/serialize_swap.ts"
   },
   "keywords": [],
   "author": "",
