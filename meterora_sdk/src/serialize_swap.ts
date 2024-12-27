@@ -16,6 +16,7 @@ const swapAmount = new BN(100);
 async function createDlmm(){
 
     const dlmmPool = DLMM.create(connection, SOL_USDC_POOL); // your pool
+    
     return dlmmPool
 
 }
@@ -94,12 +95,12 @@ async function main(){
     tippingTx.feePayer = TRADER;
 
     // Is Array check
-    const removeLiquidityTxs = Array.isArray(getSwapTx) 
+    const swapTxs = Array.isArray(getSwapTx) 
         ? getSwapTx 
         : [getSwapTx];
 
-    // Add removeLiquidityTx instructions to Jito tippingTx instructions
-    for (const tx of removeLiquidityTxs) {
+    // Add swapTxs instructions to Jito tippingTx instructions
+    for (const tx of swapTxs) {
         tippingTx.add(...tx.instructions);
     }
 
@@ -113,7 +114,7 @@ async function main(){
     const jsonBody = {
         "vault_id": process.env.VAULT_ID, // Replace with your vault ID
         "signer_type": "api_signer",
-        "sign_mode": "triggered", // IMPORTANT
+        "sign_mode": "auto", // IMPORTANT
         "type": "solana_transaction",
         "details": {
             "type": "solana_serialized_transaction_message",
@@ -121,6 +122,7 @@ async function main(){
             "data": serializedV0Message,  // For legacy transactions, use `serializedLegacyMessage`
             "chain": "solana_mainnet"
         },
+        "wait_for_state": "signed" // only for create-and-wait
     };
 
     // Write json body to file

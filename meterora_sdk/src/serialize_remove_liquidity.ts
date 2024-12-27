@@ -110,7 +110,7 @@ async function main(){
     const jsonBody = {
         "vault_id": process.env.VAULT_ID, // Replace with your vault ID
         "signer_type": "api_signer",
-        "sign_mode": "triggered", // IMPORTANT
+        "sign_mode": "auto", // IMPORTANT
         "type": "solana_transaction",
         "details": {
             "type": "solana_serialized_transaction_message",

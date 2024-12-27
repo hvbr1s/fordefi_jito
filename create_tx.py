@@ -11,7 +11,8 @@ with open('request_body.json', 'r') as f:
 request_body = json.dumps(request_json)
 
 access_token = os.getenv("FORDEFI_API_TOKEN")
-path = "/api/v1/transactions"
+#path = "/api/v1/transactions"
+path = "/api/v1/transactions/create-and-wait"
 timestamp = datetime.datetime.now().strftime("%s")
 payload = f"{path}|{timestamp}|{request_body}"
 
