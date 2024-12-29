@@ -77,7 +77,7 @@ async function main(){
     const priorityFee = 1000 // in lamports too
     const tippingTx = new web3.Transaction()
     .add(
-        web3.ComputeBudgetProgram.setComputeUnitPrice({
+        web3.ComputeBudgetProgram.setComputeUnitPrice({ // we're setting the priority fee
             microLamports: priorityFee, 
         })
     )
@@ -103,6 +103,23 @@ async function main(){
     for (const tx of swapTxs) {
         tippingTx.add(...tx.instructions);
     }
+
+    // Simulate the tx
+    const versionedTx = new web3.VersionedTransaction(
+        tippingTx.compileMessage()
+    );
+    const simulation = await connection.simulateTransaction(versionedTx, {
+        sigVerify: false,
+    });
+    const targetComputeUnitsAmount = simulation.value.unitsConsumed;
+    console.log(`Target compute unit -> ${targetComputeUnitsAmount}`)
+
+    // Add compute limits to instructions
+    // const computeUnitInstruction = web3.ComputeBudgetProgram.setComputeUnitLimit({
+    //     units: targetComputeUnitsAmount ?? 100_000
+    // });
+    // //tippingTx.add(computeUnitInstruction)
+    // // console.log(tippingTx)
 
     // Compile + serialize the merged transactions
     const mergedMessage = tippingTx.compileMessage();
