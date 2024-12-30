@@ -72,18 +72,33 @@ async function main(){
     }
 
     // Get first tip account from the array and convert it to PubKey
-    const tipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
-    console.log(`Tip account -> ${tipAccount}`)
+    const jitoTipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
+    console.log(`Tip account -> ${jitoTipAccount}`)
 
-    const tip = 1000 // Jito amount in lamports (1 SOL = 1e9 lamports)
+    const jitoTip = 1000 // Jito tip amount in lamports (1 SOL = 1e9 lamports)
+    const priorityFee = await getPriorityFees()
+    console.log(`Priority fee -> ${priorityFee}`)
+    // const cuLimit = await getCuLimit(tippingTx, connection) // OPTIONAL -> the Meteora SDK is doing it for us`
+
     const tippingTx = new web3.Transaction()
     .add(
         web3.SystemProgram.transfer({
             fromPubkey: TRADER,
-            toPubkey: tipAccount,
-            lamports: tip, 
+            toPubkey: jitoTipAccount,
+            lamports: jitoTip, 
         })
-    );
+    )
+    // OPTIONAL -> Setting CU limits and priority fee to instructions// OR set a custom number
+    .add(
+        web3.ComputeBudgetProgram.setComputeUnitPrice({
+            microLamports: priorityFee, 
+        })
+    )
+    // .add(
+    //     web3.ComputeBudgetProgram.setComputeUnitLimit({
+    //         units: targetComputeUnitsAmount ?? 100_000 //
+    //     })
+    // )
 
     // Set blockhash + fee payer
     const { blockhash } = await connection.getLatestBlockhash();
@@ -100,22 +115,6 @@ async function main(){
         tippingTx.add(...tx.instructions);
     }
 
-    // Add compute limits and priority fee to instructions
-    const priorityFee = await getPriorityFees() // OR set a custom number
-    tippingTx
-    .add(
-        web3.ComputeBudgetProgram.setComputeUnitPrice({ // we're setting the priority fee
-            microLamports: priorityFee, 
-        })
-    )
-
-    const cuLimit = await getCuLimit(tippingTx, connection)
-    // .add(
-    //     web3.ComputeBudgetProgram.setComputeUnitLimit({
-    //         units: targetComputeUnitsAmount ?? 100_000 // We're NOT setting the CU limit because the Meteora SDK is already doing it for us
-    //     })
-    // )
-
     // FOR DEBUGGING ONLY
 
     // console.log("Tx instructions:");
@@ -127,10 +126,10 @@ async function main(){
     // console.log("  Data:", ix.data.toString("hex"));
     // });
 
-    // Compile + serialize the merged transactions
-    const mergedMessage = tippingTx.compileMessage();
+    // Compile + serialize the swap tx
+    const finalSwapTx = tippingTx.compileMessage();
     const serializedV0Message = Buffer.from(
-        mergedMessage.serialize()
+        finalSwapTx.serialize()
     ).toString('base64');
 
     // Create JSON
