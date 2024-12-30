@@ -76,7 +76,7 @@ async function main(){
     console.log(`Tip account -> ${jitoTipAccount}`)
 
     const jitoTip = 1000 // Jito tip amount in lamports (1 SOL = 1e9 lamports)
-    const priorityFee = await getPriorityFees()
+    const priorityFee = await getPriorityFees() // OR set a custom number
     console.log(`Priority fee -> ${priorityFee}`)
     // const cuLimit = await getCuLimit(tippingTx, connection) // OPTIONAL -> the Meteora SDK is doing it for us`
 
@@ -88,7 +88,7 @@ async function main(){
             lamports: jitoTip, 
         })
     )
-    // OPTIONAL -> Setting CU limits and priority fee to instructions// OR set a custom number
+    // OPTIONAL -> Setting CU limits and priority fee to instructions
     .add(
         web3.ComputeBudgetProgram.setComputeUnitPrice({
             microLamports: priorityFee, 
