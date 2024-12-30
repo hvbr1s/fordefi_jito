@@ -3,6 +3,8 @@ import { BN } from 'bn.js'
 import DLMM from '@meteora-ag/dlmm'
 import * as web3 from '@solana/web3.js'
 import * as jito from 'jito-ts'
+import { getPriorityFees } from './utils/get_priority_fees'
+import { getCuLimit } from './utils/get_cu_limit'
 
 
 const quicknode_key = process.env.QUICKNODE_MAINNET_KEY
@@ -73,14 +75,8 @@ async function main(){
     const tipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
     console.log(`Tip account -> ${tipAccount}`)
 
-    const tip = 1000 // amount in lamports (1 SOL = 1e9 lamports)
-    const priorityFee = 1000 // in lamports too
+    const tip = 1000 // Jito amount in lamports (1 SOL = 1e9 lamports)
     const tippingTx = new web3.Transaction()
-    .add(
-        web3.ComputeBudgetProgram.setComputeUnitPrice({ // we're setting the priority fee
-            microLamports: priorityFee, 
-        })
-    )
     .add(
         web3.SystemProgram.transfer({
             fromPubkey: TRADER,
@@ -104,22 +100,32 @@ async function main(){
         tippingTx.add(...tx.instructions);
     }
 
-    // Simulate the tx
-    const versionedTx = new web3.VersionedTransaction(
-        tippingTx.compileMessage()
-    );
-    const simulation = await connection.simulateTransaction(versionedTx, {
-        sigVerify: false,
-    });
-    const targetComputeUnitsAmount = simulation.value.unitsConsumed;
-    console.log(`Target compute unit -> ${targetComputeUnitsAmount}`)
+    // Add compute limits and priority fee to instructions
+    const priorityFee = await getPriorityFees() // OR set a custom number
+    tippingTx
+    .add(
+        web3.ComputeBudgetProgram.setComputeUnitPrice({ // we're setting the priority fee
+            microLamports: priorityFee, 
+        })
+    )
 
-    // Add compute limits to instructions
-    // const computeUnitInstruction = web3.ComputeBudgetProgram.setComputeUnitLimit({
-    //     units: targetComputeUnitsAmount ?? 100_000
+    const cuLimit = await getCuLimit(tippingTx, connection)
+    // .add(
+    //     web3.ComputeBudgetProgram.setComputeUnitLimit({
+    //         units: targetComputeUnitsAmount ?? 100_000 // We're NOT setting the CU limit because the Meteora SDK is already doing it for us
+    //     })
+    // )
+
+    // FOR DEBUGGING ONLY
+
+    // console.log("Tx instructions:");
+
+    // tippingTx.instructions.forEach((ix, idx) => {
+    // console.log(`Instruction #${idx}:`);
+    // console.log("  ProgramID:", ix.programId.toBase58());
+    // console.log("  Keys:", ix.keys.map(k => k.pubkey.toBase58()));
+    // console.log("  Data:", ix.data.toString("hex"));
     // });
-    // //tippingTx.add(computeUnitInstruction)
-    // // console.log(tippingTx)
 
     // Compile + serialize the merged transactions
     const mergedMessage = tippingTx.compileMessage();
