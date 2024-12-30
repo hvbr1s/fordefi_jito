@@ -3,6 +3,8 @@ import { BN } from 'bn.js'
 import DLMM from '@meteora-ag/dlmm'
 import * as web3 from '@solana/web3.js'
 import * as jito from 'jito-ts'
+import { getPriorityFees } from './utils/get_priority_fees'
+import { getCuLimit } from './utils/get_cu_limit'
 
 
 const quicknode_key = process.env.QUICKNODE_MAINNET_KEY
@@ -70,24 +72,33 @@ async function main(){
     }
 
     // Get first tip account from the array and convert it to PubKey
-    const tipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
-    console.log(`Tip account -> ${tipAccount}`)
+    const jitoTipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
+    console.log(`Tip account -> ${jitoTipAccount}`)
 
-    const tip = 1000 // amount in lamports (1 SOL = 1e9 lamports)
-    const priorityFee = 1000 // in lamports too
+    const jitoTip = 1000 // Jito tip amount in lamports (1 SOL = 1e9 lamports)
+    const priorityFee = await getPriorityFees()
+    console.log(`Priority fee -> ${priorityFee}`)
+    // const cuLimit = await getCuLimit(tippingTx, connection) // OPTIONAL -> the Meteora SDK is doing it for us`
+
     const tippingTx = new web3.Transaction()
-    .add(
-        web3.ComputeBudgetProgram.setComputeUnitPrice({ // we're setting the priority fee
-            microLamports: priorityFee, 
-        })
-    )
     .add(
         web3.SystemProgram.transfer({
             fromPubkey: TRADER,
-            toPubkey: tipAccount,
-            lamports: tip, 
+            toPubkey: jitoTipAccount,
+            lamports: jitoTip, 
         })
-    );
+    )
+    // OPTIONAL -> Setting CU limits and priority fee to instructions// OR set a custom number
+    .add(
+        web3.ComputeBudgetProgram.setComputeUnitPrice({
+            microLamports: priorityFee, 
+        })
+    )
+    // .add(
+    //     web3.ComputeBudgetProgram.setComputeUnitLimit({
+    //         units: targetComputeUnitsAmount ?? 100_000 //
+    //     })
+    // )
 
     // Set blockhash + fee payer
     const { blockhash } = await connection.getLatestBlockhash();
@@ -104,27 +115,21 @@ async function main(){
         tippingTx.add(...tx.instructions);
     }
 
-    // Simulate the tx
-    const versionedTx = new web3.VersionedTransaction(
-        tippingTx.compileMessage()
-    );
-    const simulation = await connection.simulateTransaction(versionedTx, {
-        sigVerify: false,
-    });
-    const targetComputeUnitsAmount = simulation.value.unitsConsumed;
-    console.log(`Target compute unit -> ${targetComputeUnitsAmount}`)
+    // FOR DEBUGGING ONLY
 
-    // Add compute limits to instructions
-    // const computeUnitInstruction = web3.ComputeBudgetProgram.setComputeUnitLimit({
-    //     units: targetComputeUnitsAmount ?? 100_000
+    // console.log("Tx instructions:");
+
+    // tippingTx.instructions.forEach((ix, idx) => {
+    // console.log(`Instruction #${idx}:`);
+    // console.log("  ProgramID:", ix.programId.toBase58());
+    // console.log("  Keys:", ix.keys.map(k => k.pubkey.toBase58()));
+    // console.log("  Data:", ix.data.toString("hex"));
     // });
-    // //tippingTx.add(computeUnitInstruction)
-    // // console.log(tippingTx)
 
-    // Compile + serialize the merged transactions
-    const mergedMessage = tippingTx.compileMessage();
+    // Compile + serialize the swap tx
+    const finalSwapTx = tippingTx.compileMessage();
     const serializedV0Message = Buffer.from(
-        mergedMessage.serialize()
+        finalSwapTx.serialize()
     ).toString('base64');
 
     // Create JSON
