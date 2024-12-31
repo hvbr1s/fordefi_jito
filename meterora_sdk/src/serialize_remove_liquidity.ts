@@ -3,6 +3,9 @@ import { BN } from 'bn.js'
 import DLMM from '@meteora-ag/dlmm'
 import * as web3 from '@solana/web3.js'
 import * as jito from 'jito-ts'
+import { getJitoTipAccount } from './utils/get_jito_tip_account'
+import { getPriorityFees } from './utils/get_priority_fees'
+import { getCuLimit } from './utils/get_cu_limit'
 
 
 const quicknode_key = process.env.QUICKNODE_MAINNET_KEY
@@ -60,30 +63,34 @@ async function main(){
     // Create Jito client instance
     const client = jito.searcher.searcherClient("frankfurt.mainnet.block-engine.jito.wtf") // can customize
 
-    const tipAccountsResult = await client.getTipAccounts();
-    if (!tipAccountsResult.ok) {
-        throw new Error(`Failed to get tip accounts: ${tipAccountsResult.error}`);
-    }
+    // Get Jito Tip Account
+    const jitoTipAccount = await getJitoTipAccount(client)
+    console.log(`Tip account -> ${jitoTipAccount}`)
 
-    // Get first tip account from the array and convert it to PubKey
-    const tipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
-    console.log(`Tip account -> ${tipAccount}`)
+   const jitoTip = 1000 // Jito tip amount in lamports (1 SOL = 1e9 lamports)
+   const priorityFee = await getPriorityFees() // OR set a custom number
+   console.log(`Priority fee -> ${priorityFee}`)
+   // const cuLimit = await getCuLimit(tippingTx, connection) // OPTIONAL -> the Meteora SDK is doing it for us`
 
-    const tip = 1000 // amount in lamports (1 SOL = 1e9 lamports)
-    const priorityFee = 1000 // in lamports too
-    const tippingTx = new web3.Transaction()
-    .add(
-        web3.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: priorityFee, 
-        })
-    )
-    .add(
-        web3.SystemProgram.transfer({
-            fromPubkey: TRADER,
-            toPubkey: tipAccount,
-            lamports: tip, 
-        })
-    );
+   const tippingTx = new web3.Transaction()
+   .add(
+       web3.SystemProgram.transfer({
+           fromPubkey: TRADER,
+           toPubkey: jitoTipAccount,
+           lamports: jitoTip, 
+       })
+   )
+   // OPTIONAL -> Setting CU limits and priority fee to instructions
+   .add(
+       web3.ComputeBudgetProgram.setComputeUnitPrice({
+           microLamports: priorityFee, 
+       })
+   )
+   // .add(
+   //     web3.ComputeBudgetProgram.setComputeUnitLimit({
+   //         units: targetComputeUnitsAmount ?? 100_000 //
+   //     })
+   // )
 
     // Set blockhash + fee payer
     const { blockhash } = await connection.getLatestBlockhash();

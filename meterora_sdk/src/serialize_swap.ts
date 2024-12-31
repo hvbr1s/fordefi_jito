@@ -3,6 +3,7 @@ import { BN } from 'bn.js'
 import DLMM from '@meteora-ag/dlmm'
 import * as web3 from '@solana/web3.js'
 import * as jito from 'jito-ts'
+import { getJitoTipAccount } from './utils/get_jito_tip_account'
 import { getPriorityFees } from './utils/get_priority_fees'
 import { getCuLimit } from './utils/get_cu_limit'
 
@@ -66,13 +67,8 @@ async function main(){
     // Create Jito client instance
     const client = jito.searcher.searcherClient("frankfurt.mainnet.block-engine.jito.wtf") // can customize
 
-    const tipAccountsResult = await client.getTipAccounts();
-    if (!tipAccountsResult.ok) {
-        throw new Error(`Failed to get tip accounts: ${tipAccountsResult.error}`);
-    }
-
-    // Get first tip account from the array and convert it to PubKey
-    const jitoTipAccount = new web3.PublicKey(tipAccountsResult.value[0]);
+    // Get Jito Tip Account
+    const jitoTipAccount = await getJitoTipAccount(client)
     console.log(`Tip account -> ${jitoTipAccount}`)
 
     const jitoTip = 1000 // Jito tip amount in lamports (1 SOL = 1e9 lamports)
